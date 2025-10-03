@@ -11,6 +11,6 @@
 % rate_func_in when computing the next step
 function [XB,num_evals] = forward_euler_step(rate_func_in,t,XA,h)
     XB = XA + h*rate_func_in(t,XA);
-    % num_evals = num_evals+1;
+    num_evals = 0; %change this
     
 end
