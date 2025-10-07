@@ -10,14 +10,14 @@
 %X_list: the vector of X, [X0';X1';X2';...;(X_end)'] at each time step
 %h_avg: the average step size
 %num_evals: total number of calls made to rate_func_in during the integration
-function [t_list,X_list,h_avg, num_evals] = forward_euler_fixed_step_integration2(rate_func_in,tspan,X0,h_ref)
+function [t_input_list, X_list, h_average, num_evals] = forward_euler_fixed_step_integration2(rate_func_in, tspan, X0,h)
     
    
     t0 = tspan(1);
     tf = tspan(2);
 
-    N = ceil((tf-t0) / h_ref);
-    h = (tf-t0) / N;
+    N = ceil((tf-t0) / h);
+    h_average = (tf-t0) / N;
 
     global t_input_list;
     t_input_list = linspace(t0,tf,N+1);
@@ -38,5 +38,5 @@ function [t_list,X_list,h_avg, num_evals] = forward_euler_fixed_step_integration
     plot(t_input_list,X_list,'b',LineWidth=5); 
     plot(t_input_list,cos(t_input_list),'go')
     hold off;
-
+    t_input_list
 end
