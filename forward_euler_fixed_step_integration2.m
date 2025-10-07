@@ -32,7 +32,11 @@ function [t_list,X_list,h_avg, num_evals] = forward_euler_fixed_step_integration
         X0 = XB;
 
     end
-    figure;
-    plot(t_input_list,X_list)
+    
+    % FIXXXXXX
+    figure; hold on;
+    plot(t_input_list,X_list,'b',LineWidth=5); 
+    plot(t_input_list,cos(t_input_list),'go')
+    hold off;
 
 end
