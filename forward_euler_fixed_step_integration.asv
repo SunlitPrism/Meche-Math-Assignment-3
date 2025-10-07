@@ -11,21 +11,27 @@
 %X_list: the vector of X, [X0';X1';X2';...;(X_end)'] at each time step
 %h_avg: the average step size
 %num_evals: total number of calls made to rate_func_in during the integration
-function [t_list,X_list,h_avg, num_evals] = forward_euler_fixed_step_integration(rate_func_in, tspan, XA, h_ref)
-    N = 0;
+function [t_list, X_list, h_avg, num_evals] = forward_euler_fixed_step_integration(rate_func_in, tspan, XA, h_ref)
+   
     X_list = [XA];
     t_list = [];
-    for t = tspan(1): h_ref: tspan(2)
+    h_avg = [];
+    iter = tspan(1);
 
+    for t = tspan(1): h_ref : tspan(2)
+        iter = iter + h_ref;
         [XB, num_evals] = forward_euler_step(rate_func_in, t, XA, h_ref);
         XA = XB;
         X_list = [X_list; XB];
+        t_list = [t_list; iter];
+        h = (tspan(2) - tspan(2)) / num_evals;
+        h_avg = [h_avg; h];
 
-        if ((tspan(2) - tspan(1)) / num_evals) >= h_ref
+        if h >= h_ref
+
             num_evals = num_evals + 0.01;
-        else
+            X_list = []
 
-            break;
         end
     end
 end

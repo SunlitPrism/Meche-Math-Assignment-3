@@ -7,7 +7,6 @@ function asst3()
     h = 0.5; %timestep
     t0 = 0;
     tf = 6;
-    N = 0;
     X0 = 1;
     tspan = [t0, tf];
 
@@ -24,6 +23,7 @@ function asst3()
     [XB,~] = forward_euler_step(@rate_func01, t, X0, h);
     [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration(@rate_func01, tspan, X0, h);
     figure()
+
     plot(t_list, x_list);
     X = solution01(linspace(tspan(1), tspan(2), h));
     plot(linspace(tspan(1), tspan(2), h), X);
