@@ -13,8 +13,9 @@
 % formula depends on the integration method used
 %num_evals: A count of the number of times that you called
 % rate_func_in when computing the next step
-function [XB,num_evals] = explicit_midpoint_step(rate_func_in,t,XA)
+function [XB,num_evals] = explicit_midpoint_step(rate_func_in,t,XA,h)
     Xhalf = XA +(h/2)*rate_func_in(t,XA);
+        num_evals = 0;
         num_evals = num_evals+1;
     XB = XA + h*rate_func_in(t+(h/2),Xhalf);
         num_evals = num_evals+1;

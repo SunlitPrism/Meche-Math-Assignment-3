@@ -21,7 +21,7 @@ function asst3()
     
 
     [XB,~] = forward_euler_step(@rate_func01, t, X0, h);
-    [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration(@rate_func01, tspan, X0, h);
+    [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration2(@rate_func01, tspan, X0, h);
     figure()
 
     plot(t_list, x_list);
