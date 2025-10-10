@@ -4,13 +4,13 @@ function asst3()
     %define constants
     t = linspace(0,5,6);
     %t = 0;
-    t_ref = 0.492;
+    t_ref = 0.5;
     h_ref = 0.2; %reference timestep
     t0 = 0;
     tf = 6;
     X0 = 1;
     tspan = [t0, tf];
-    hspan = [1e-8, 1e-1, 15];
+    hspan = [-5, -1, 100];
 
     for t_iter = 1:length(t)-1
         X = solution01(t_iter);
@@ -29,8 +29,37 @@ function asst3()
     X = solution01(linspace(tspan(1), tspan(2), (tspan(2)/h_avg))); %Calc Analytical
     plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
     legend("Forward Euler","Explicit Mid","Analytical")
+    hold off
     
-    % [error_list] = truncation_error(t_ref, hspan);
+    % Find local truncation error for Forward Euler, Explicit Midpoint, and Analytical Difference
+    [h_list,analytical_difference,fel_error_list,expmid_error_list] = truncation_error(t_ref, hspan,@rate_func01);
+ 
+    % Find line of best fit coefficients
+    [analytical_p,analytical_k] = loglog_fit(h_list,analytical_difference);
+    analytical_y = analytical_k.*((h_list.^analytical_p));
+
+    [fel_p,fel_k] = loglog_fit(h_list,fel_error_list);
+    fel_y_data = fel_k.*((h_list.^fel_p));
+
+    [expmid_p,expmid_k] = loglog_fit(h_list,expmid_error_list);
+    expmid_y_data = expmid_k.*((h_list.^expmid_p));
+
+
+    % Plot log scale graph of errors vs h_list (all the different step sizes used)
+    figure;
+    loglog(h_list,analytical_difference,'bo','MarkerFaceColor','b'); hold on;
+    loglog(h_list,analytical_y,'k','LineWidth',2);
+
+    loglog(h_list,fel_error_list,'ro','MarkerFaceColor','r');
+    loglog(h_list,fel_y_data,'k','LineWidth',2);
+
+    loglog(h_list,expmid_error_list,'go','MarkerFaceColor','g');
+    loglog(h_list,expmid_y_data,'k','LineWidth',2);
+    
+    % Set axes and legend
+    xlim([1e-5 1e0])
+    legend('Analytical','','Forward Euler','','Explicit Midpoint')
+
     % plot(t_list, error_list);
 end
 

@@ -13,22 +13,30 @@
 % 
 % end
 
-function [error_list] = truncation_error(t_ref, hspan)
+function [h_list,analytical_difference,fel_error_list,expmid_error_list] = truncation_error(t_ref, hspan, test_function)
 
     h_list = logspace(hspan(1), hspan(2), hspan(3));
-    x_approx_list = [];
+    x_approx_fel_list = []; % Forward Euler Local
+    x_approx_expmid_list = []; % Explicit Midpoint
     x_analytical_list = [];
 
     XA = solution01(t_ref);
-    for i = 1:(length(h_list) - 2) % subtracting by two to make error_list the same size as t_list in asst3. Fix later.
+    for i = 1:(length(h_list)) % subtracting by two to make error_list the same size as t_list in asst3. Fix later.
         
-        [x_approx,~] = forward_euler_step(@rate_func01,t_ref,XA,h_list(i));
-        x_approx_list(end+1) = x_approx;
+        [x_approx_fel,~] = forward_euler_step(test_function,t_ref,XA,h_list(i));
+        [x_approx_expmid,~] = explicit_midpoint_step(test_function,t_ref,XA,h_list(i));
+
+
+        x_approx_fel_list(end+1) = x_approx_fel;
+        x_approx_expmid_list(end+1) = x_approx_expmid;
         x_analytical_list(end+1) = solution01(t_ref+h_list(i));
     end
-    error_list = abs(x_approx_list - x_analytical_list);
-    error_list
     analytical_difference = abs(x_analytical_list-XA); % |X(t + h) − X(t)|
+    fel_error_list = abs(x_approx_fel_list - x_analytical_list);
+    expmid_error_list = abs(x_approx_expmid_list - x_analytical_list);
+
     % next step: plot as a function of hspan
+
+    
 
 end
