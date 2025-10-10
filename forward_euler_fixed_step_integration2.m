@@ -32,10 +32,4 @@ function [t_input_list, X_list, h_average, num_evals] = forward_euler_fixed_step
         X0 = XB;
 
     end
-    
-    % FIXXXXXX
-    % figure; hold on;
-    % plot(t_input_list,X_list,'b',LineWidth=5); 
-    % plot(t_input_list,cos(t_input_list),'go')
-    % hold off;
 end

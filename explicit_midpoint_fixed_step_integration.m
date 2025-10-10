@@ -30,5 +30,4 @@ function [t_input_list,X_list,h_avg, num_evals] = explicit_midpoint_fixed_step_i
         X0 = XB;
 
     end
-    h_avg = .432;
 end
