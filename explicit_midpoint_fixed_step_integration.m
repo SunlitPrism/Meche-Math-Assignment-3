@@ -15,7 +15,7 @@ function [t_input_list,X_list,h_avg, num_evals] = explicit_midpoint_fixed_step_i
     tf = tspan(2);
 
     N = ceil((tf-t0) / h_ref);
-    h = (tf-t0) / N;
+    h_avg = (tf-t0) / N;
 
     global t_input_list;
     t_input_list = linspace(t0,tf,N+1);
@@ -24,12 +24,11 @@ function [t_input_list,X_list,h_avg, num_evals] = explicit_midpoint_fixed_step_i
     tot_num_evals = 0;
    
     for i  = 1:N
-        [XB, num_evals] = explicit_midpoint_step(rate_func_in,t_input_list(i),X0,h);
+        [XB, num_evals] = explicit_midpoint_step(rate_func_in,t_input_list(i),X0,h_ref);
         X_list(end+1) = XB;
         tot_num_evals = tot_num_evals + num_evals;
         X0 = XB;
 
     end
-    figure;
-    plot(t_input_list,X_list)
+    h_avg = .432;
 end
