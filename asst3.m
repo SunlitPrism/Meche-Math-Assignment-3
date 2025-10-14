@@ -32,11 +32,9 @@ function asst3()
     hold off
     
     % Find local truncation error for Forward Euler, Explicit Midpoint, and Analytical Difference
-    [h_list,analytical_difference,fel_error_list,expmid_error_list] = truncation_error(t_ref, hspan,@rate_func01);
- 
+    [h_list,fel_error_list,expmid_error_list] = truncation_error(t_ref, hspan,@rate_func01);
+
     % Find line of best fit coefficients
-    [analytical_p,analytical_k] = loglog_fit(h_list,analytical_difference);
-    analytical_y = analytical_k.*((h_list.^analytical_p));
 
     [fel_p,fel_k] = loglog_fit(h_list,fel_error_list);
     fel_y_data = fel_k.*((h_list.^fel_p));
@@ -47,19 +45,51 @@ function asst3()
 
     % Plot log scale graph of errors vs h_list (all the different step sizes used)
     figure;
-    loglog(h_list,analytical_difference,'bo','MarkerFaceColor','b'); hold on;
-    loglog(h_list,analytical_y,'k','LineWidth',2);
 
-    loglog(h_list,fel_error_list,'ro','MarkerFaceColor','r');
+    loglog(h_list,fel_error_list,'ro','MarkerFaceColor','r'); hold on;
     loglog(h_list,fel_y_data,'k','LineWidth',2);
 
     loglog(h_list,expmid_error_list,'go','MarkerFaceColor','g');
-    loglog(h_list,expmid_y_data,'k','LineWidth',2);
+    loglog(h_list,expmid_y_data,'k','LineWidth',2); hold off;
     
     % Set axes and legend
     xlim([1e-5 1e0])
-    legend('Analytical','','Forward Euler','','Explicit Midpoint')
+    legend('Forward Euler','','Explicit Midpoint')
+    title("Local")
 
-    % plot(t_list, error_list);
+    % Find Global truncation error for Forward Euler, Explicit Midpoint
+    [global_h_list,global_fel_error_list,global_expmid_error_list,tot_evals_fel,tot_evals_expmid] = global_truncation_error(tspan, hspan, @rate_func01);
+
+    % Find line of best fit coefficients
+
+    [g_fel_p,g_fel_k] = loglog_fit(global_h_list,global_fel_error_list);
+    g_fel_y_data = g_fel_k.*((global_h_list.^g_fel_p));
+
+    [g_expmid_p,g_expmid_k] = loglog_fit(global_h_list,global_expmid_error_list);
+    g_expmid_y_data = g_expmid_k.*((global_h_list.^g_expmid_p));
+
+
+    % Plot log scale graph of errors vs h_list (all the different step sizes used)
+    figure;
+
+    loglog(global_h_list,global_fel_error_list,'ro','MarkerFaceColor','r'); hold on;
+    loglog(global_h_list,g_fel_y_data,'k','LineWidth',2);
+
+    loglog(global_h_list,global_expmid_error_list,'go','MarkerFaceColor','g');
+    loglog(global_h_list,g_expmid_y_data,'k','LineWidth',2); hold off; 
+    
+    % Plot log scale graph of errors vs # of Calls
+    figure;
+
+    loglog(tot_evals_fel,global_fel_error_list,'ro','MarkerFaceColor','r'); hold on;
+    loglog(tot_evals_fel,g_fel_y_data,'k','LineWidth',2);
+
+    loglog(tot_evals_expmid,global_expmid_error_list,'go','MarkerFaceColor','g');
+    loglog(tot_evals_expmid,g_expmid_y_data,'k','LineWidth',2); hold off; 
+
+    % Set axes and legend
+    %xlim([1e-5 1e0])
+    legend('Forward Euler','','Explicit Midpoint')
+    title('Global vs # of Calls')
 end
 
