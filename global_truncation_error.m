@@ -13,7 +13,7 @@
 % 
 % end
 
-function [h_list,g_fel_error_list,g_expmid_error_list,tot_evals_fel,tot_evals_expmid] = global_truncation_error(tspan, hspan, test_function)
+function [h_list,g_fel_error_list,g_expmid_error_list, g_analytical_difference, tot_evals_fel,tot_evals_expmid] = global_truncation_error(tspan, hspan, test_function)
 
     h_list = logspace(hspan(1), hspan(2), hspan(3));
     t0 = tspan(1);
@@ -21,7 +21,7 @@ function [h_list,g_fel_error_list,g_expmid_error_list,tot_evals_fel,tot_evals_ex
 
     x_approx_fel_list = []; % Forward Euler Local
     x_approx_expmid_list = []; % Explicit Midpoint
-    x_analytical_list = [];
+    x_analytical_list = []; % Analytical Solution
     global tot_evals_fel;
     global tot_evals_expmid;
     tot_evals_fel = [];
@@ -42,7 +42,7 @@ function [h_list,g_fel_error_list,g_expmid_error_list,tot_evals_fel,tot_evals_ex
     end
     g_fel_error_list = abs(x_approx_fel_list - x_analytical_list);
     g_expmid_error_list = abs(x_approx_expmid_list - x_analytical_list);
-
+    g_analytical_difference = abs(x_analytical_list - x_analytical_list);
     % next step: plot as a function of hspan
 
     
