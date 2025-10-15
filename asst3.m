@@ -20,8 +20,9 @@ function asst3()
     end
     
     %[XB, ~] = forward_euler_step(@rate_func01, t, X0, h);
-    [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration2(@rate_func01, tspan, X0, h_ref);
-    [t_mid_list,x_list_expmid,h_avg_expmid, num_evals_expmid] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);  
+    %[t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration2(@rate_func01, tspan, X0, h_ref);
+    [t_list, x_list, h_avg, num_evals] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
+    [t_mid_list,x_list_expmid,h_avg_expmid, num_evals_expmid] = implicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);  
     
    
     % Plot Euler vs. Analytical throughout different time step sizes
@@ -32,7 +33,7 @@ function asst3()
     for i = 1:4
         plot(t_list, x_list, '.', 'MarkerSize', 20); % Plot Euler step integration over time
         h_ref = h_ref + 0.3;
-        [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration2(@rate_func01, tspan, X0, h_ref);
+        [t_list, x_list, h_avg, num_evals] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
         hold on
     end
     ylim([-4, 4]);
@@ -45,11 +46,11 @@ function asst3()
     % Plot Midpoint vs. Analytical throughout different time step sizes
     figure()
     h_ref = 0.1; %reset back to 0.1
-    [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration2(@rate_func01, tspan, X0, h_ref); % re-claim parameters with reset h_ref
+    [t_list, x_list, h_avg, num_evals] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref); % re-claim parameters with reset h_ref
     plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
     hold on
     for i = 1:4
-        plot(t_mid_list, x_list_expmid, '.', 'MarkerSize', 20); % Plot Explict Midpoint step integration over time
+        plot(t_mid_list, x_list_expmid(:, 1), '.', 'MarkerSize', 20); % Plot Explict Midpoint step integration over time
         h_ref = h_ref + 0.2;
         [t_mid_list,x_list_expmid,h_avg_expmid, num_evals_expmid] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
         hold on;
@@ -174,6 +175,6 @@ function asst3()
     % calls (values of p). p values chosen are
 
 
-    
+
 end
 

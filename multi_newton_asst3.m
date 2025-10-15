@@ -1,4 +1,5 @@
-function [xi, exit_flag] = multi_newton_asst3(fun,x_guess,solver_params)
+function [xi, exit_flag, num_evals] = multi_newton_asst3(fun,x_guess,solver_params)
+    num_evals = 0;
     %unpack values from struct (if fields in struct have been set)
     dxtol = 1e-14; %terminate early if |x_{i+1}-x_{i}|<dxtol
     if isfield(solver_params,'dxtol')
@@ -29,22 +30,29 @@ function [xi, exit_flag] = multi_newton_asst3(fun,x_guess,solver_params)
     % change in x is already too small)
     if numerical_diff ~= 1
         [fx, J] = fun(xi);
+        num_evals = num_evals + 1;
     else
         fx = fun(xi);
-        J = approximate_jacobian_for_newton(fun, xi);
+        num_evals = num_evals + 1;
+        [J, num_evals_temp] = approximate_jacobian_for_newton(fun, xi);
+        num_evals = num_evals + num_evals_temp;
     end
     
     delta_x = -J\fx;
     
+
     % keep finding "next point" until either change too small, too many iter, or find the root
     while iter < max_iter && norm(delta_x) >= dxtol && norm(fx) >= ftol && norm(delta_x) <= dxmax
         xi = xi + delta_x;
         
         if numerical_diff ~= 1
             [fx, J] = fun(xi);
+            num_evals = num_evals + 1;
         else
             fx = fun(xi);
-            J = approximate_jacobian_for_newton(fun, xi);
+            num_evals = num_evals + 1;
+            [J, num_evals_temp] = approximate_jacobian_for_newton(fun, xi);
+            num_evals = num_evals + num_evals_temp;
         end
         
         delta_x = -J\fx;
@@ -73,7 +81,8 @@ end
 
 
 % Numerical Approximation of the Jacobian
-function J = approximate_jacobian_for_newton(fun,x)
+function [J, num_evals] = approximate_jacobian_for_newton(fun,x)
+    num_evals = 0;
     J = [];
     h = 1e-6;
 
@@ -82,5 +91,6 @@ function J = approximate_jacobian_for_newton(fun,x)
         basis_j(j) = 1;
         column = (fun(x + h*basis_j) - fun(x - h*basis_j)) / (2*h);
         J = [J, column];
+        num_evals = num_evals + 2;
     end
 end

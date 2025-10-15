@@ -1,5 +1,5 @@
 %This function computes the value of X at the next time step
-%using the Backward Euler approximation
+%using the implicit midpoint approximation
 %INPUTS:
 %rate_func_in: the function used to compute dXdt. rate_func_in will
 % have the form: dXdt = rate_func_in(t,X) (t is before X)
@@ -11,7 +11,7 @@
 % formula depends on the integration method used
 %num_evals: A count of the number of times that you called
 % rate_func_in when computing the next step
-function [XB,num_evals] = backward_euler_step(rate_func_in,t,XA,h)
-    G = @(X_in) XA + h * rate_func_in(t+h, X_in) - X_in; 
+function [XB,num_evals] = implicit_midpoint_step(rate_func_in,t,XA,h)
+    G = @(X_in) XA + h * rate_func_in(t+h/2, 0.5*(X_in + XA)) - X_in; 
     [XB, ~, num_evals] = multi_newton_asst3(G, XA, struct());
 end
