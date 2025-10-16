@@ -34,11 +34,11 @@ function asst3()
     for i = 1:4
         plot(t_list, x_list, '.', 'MarkerSize', 20); % Plot Euler step integration over time
         h_ref = h_ref + 0.3;
-        [t_list, x_list, h_avg, num_evals] = forward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
+        [t_list, x_list, ~, ~] = forward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
         hold on
     end
     ylim([-4, 4]);
-    title("Euler step integration over time for different time step sizes");
+    title("Forward Euler step integration over time for different time step sizes");
     xlabel("Time");
     ylabel("X(t)");
     legend("Analytical Solution","0.1 timestep", "0.4 timestep", "0.7 timestep", "1.0 timestep");
@@ -47,11 +47,11 @@ function asst3()
     % Plot Midpoint vs. Analytical throughout different time step sizes
     figure()
     h_ref = 0.1; %reset back to 0.1
-    [t_list, x_list, h_avg, num_evals] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref); % re-claim parameters with reset h_ref
+    [t_list, x_list, h_avg, ~] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref); % re-claim parameters with reset h_ref
     plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
     hold on
     for i = 1:4
-        [t_mid_list,x_list_expmid,h_avg_expmid, num_evals_expmid] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
+        [t_mid_list,x_list_expmid,~, ~] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
         plot(t_mid_list, x_list_expmid(:, 1), '.', 'MarkerSize', 20); % Plot Explict Midpoint step integration over time
         h_ref = h_ref + 0.2;
         hold on;
@@ -63,24 +63,102 @@ function asst3()
     legend("Analytical Solution","0.1 timestep", "0.3 timestep", "0.5 timestep", "0.7 timestep");
     hold off
 
+    % Plot Backward Euler vs. Analytical throughout different time step sizes
+    figure()
+    X = solution01(linspace(tspan(1), tspan(2), (tspan(2)/h_avg))); %Calc Analytical
+    plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
+    hold on
+    for i = 1:4
+        plot(t_list, x_list, '.', 'MarkerSize', 20); % Plot Euler step integration over time
+        h_ref = h_ref + 0.3;
+        [t_list, x_list, ~, ~] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
+        hold on
+    end
+    ylim([-4, 4]);
+    title("Backward Euler step integration over time for different time step sizes");
+    xlabel("Time");
+    ylabel("X(t)");
+    legend("Analytical Solution","0.1 timestep", "0.4 timestep", "0.7 timestep", "1.0 timestep");
+    hold off
+    
+    % Plot Implicit Midpoint vs. Analytical throughout different time step sizes
+    figure()
+    h_ref = 0.1; %reset back to 0.1
+    [t_list, x_list, h_avg, ~] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref); % re-claim parameters with reset h_ref
+    plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
+    hold on
+    for i = 1:4
+        [t_mid_list,x_list_impmid,~, ~] = implicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
+        plot(t_mid_list, x_list_impmid(:, 1), '.', 'MarkerSize', 20); % Plot Implicit Midpoint step integration over time
+        h_ref = h_ref + 0.2;
+        hold on;
+    end
+    ylim([-4, 4]);
+    title("Implicit midpoint step integration over time for different time step sizes");
+    xlabel("Time");
+    ylabel("X(t)");
+    legend("Analytical Solution","0.1 timestep", "0.3 timestep", "0.5 timestep", "0.7 timestep");
+    hold off
+
+    [t_list, x_list, ~, ~] = forward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
+    [bel_t_list, bel_x_list, ~, ~] = backward_euler_fixed_step_integration(@rate_func01, tspan, X0, h_ref);
+    [t_mid_list, x_list_expmid,~, ~] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref); 
+    [imp_t_mid_list, x_list_impmid,~, ~] = implicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);  
+    
+
     % Plot Euler + Midpoint vs. Analytical for h_ref = 0.38 and 0.45
     figure()
     X = solution01(linspace(tspan(1), tspan(2), (tspan(2)/h_avg))); %Calc Analytical
     plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
     hold on
     plot(t_list, x_list,'gO'); % Plot Euler step integration over time
-    hold on
-    plot(t_mid_list, x_list_expmid,'rO'); % Plot Explict Midpoint step integration over time
-    title("Euler and Midpoint step integration over time for href = 0.45");
+    title("Euler step integration over time for href = 0.38");
     xlabel("Time");
     ylabel("X(t)");
-    legend("Analytical Solution", "Euler", "Explicit Midpoint");
+    legend("Analytical Solution", "Euler");
+    ylim([-3000 500])
+    hold off
+
+    figure()
+    plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b');
+    hold on
+    plot(t_mid_list, x_list_expmid,'rO'); % Plot Explict Midpoint step integration over time
+    title("Midpoint step integration over time for href = 0.38");
+    xlabel("Time");
+    ylabel("X(t)");
+    legend("Analytical Solution", "Explicit Midpoint");
+    ylim([-3000 500])
+    hold off
+
+    % Plot Euler + Midpoint vs. Analytical for h_ref = 0.38 and 0.45
+    % IMPLICT
+    figure()
+    X = solution01(linspace(tspan(1), tspan(2), (tspan(2)/h_avg))); %Calc Analytical
+    plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b'); % Plot analytical solution over time
+    hold on
+    plot(bel_t_list, bel_x_list,'gO'); % Plot Euler step integration over time
+    title("Backward Euler step integration over time for href = 0.38");
+    xlabel("Time");
+    ylabel("X(t)");
+    legend("Analytical Solution", "Backward Euler");
+    ylim([-3000 500])
+    hold off
+
+    figure()
+    plot(linspace(tspan(1), tspan(2), (tspan(2)/h_avg)), X,'b');
+    hold on
+    plot(imp_t_mid_list, x_list_impmid,'rO'); % Plot Explict Midpoint step integration over time
+    title("Implicit Midpoint step integration over time for href = 0.38");
+    xlabel("Time");
+    ylabel("X(t)");
+    legend("Analytical Solution", "Implicit Midpoint");
+    ylim([-3000 500])
     hold off
    
     
     % Find local truncation error for Forward Euler, Explicit Midpoint, and Analytical Difference
     [h_list, analytical_difference, fel_error_list,expmid_error_list] = truncation_error(t_ref, hspan,@rate_func01);
-    
+
     % Print out values for table of local truncation errors with step size
     % (values of p). p values chosen are the first and last values of
     % h_span, or -5 and -1.
@@ -121,8 +199,8 @@ function asst3()
     ylabel("Error");
 
     % Find Global truncation error for Forward Euler, Explicit Midpoint
-    [global_h_list,global_fel_error_list,global_expmid_error_list, global_bel_error_list,global_impmid_error_list,global_analytical_list, tot_evals_fel,tot_evals_expmid, tot_evals_bel] = global_truncation_error(tspan, hspan, @rate_func01);
- 
+    [global_h_list,global_fel_error_list,global_expmid_error_list, global_bel_error_list,global_impmid_error_list,global_analytical_list, tot_evals_fel,tot_evals_expmid, tot_evals_bel,tot_evals_impmid] = global_truncation_error(tspan, hspan, @rate_func01);
+
     % Print out values for table of global truncation errors with step size
     % (values of p). p values chosen are the first and last values of
     % h_span, or -5 and -1.
@@ -143,7 +221,13 @@ function asst3()
 
     [g_expmid_p,g_expmid_k] = loglog_fit(global_h_list,global_expmid_error_list);
     g_expmid_y_data = g_expmid_k.*((global_h_list.^g_expmid_p));
-    
+
+    [g_bel_p,g_bel_k] = loglog_fit(global_h_list,global_bel_error_list);
+    g_bel_y_data = g_bel_k.*((global_h_list.^g_bel_p));
+
+    [g_impmid_p,g_impmid_k] = loglog_fit(global_h_list,global_impmid_error_list);
+    g_impmid_y_data = g_impmid_k.*((global_h_list.^g_impmid_p));
+
 
     % Plot log scale graph of errors vs h_list (all the different step sizes used)
     figure;
@@ -159,25 +243,25 @@ function asst3()
     title("Global error vs. h list")
     xlabel("Time step sizes");
     ylabel("Error");
-    
+
 
     % Plot log scale graph of errors vs # of calls
     figure;
 
     loglog(tot_evals_fel,global_fel_error_list,'ro','MarkerFaceColor','r'); hold on;
-    loglog(tot_evals_fel,g_fel_y_data,'k','LineWidth',2);
+    %loglog(tot_evals_fel,g_fel_y_data,'k','LineWidth',2);
 
     loglog(tot_evals_expmid,global_expmid_error_list,'go','MarkerFaceColor','g');
-    loglog(tot_evals_expmid,g_expmid_y_data,'k','LineWidth',2); hold on; 
+    %loglog(tot_evals_expmid,g_expmid_y_data,'k','LineWidth',2); hold on; 
 
-    loglog(tot_evals_bel,global_bel_error_list,'ro','MarkerFaceColor','r'); hold on;
-    loglog(tot_evals_bel,g_bel_y_data,'k','LineWidth',2);
+    loglog(tot_evals_bel,global_bel_error_list,'co','MarkerFaceColor','c'); hold on;
+    %loglog(tot_evals_bel,g_bel_y_data,'k','LineWidth',2);
 
-    loglog(tot_evals_impmid,global_impmid_error_list,'go','MarkerFaceColor','g');
-    loglog(tot_evals_impmid,g_impmid_y_data,'k','LineWidth',2); hold on; 
+    loglog(tot_evals_impmid,global_impmid_error_list,'mo','MarkerFaceColor','m');
+    %loglog(tot_evals_impmid,g_impmid_y_data,'k','LineWidth',2); hold on; 
 
     loglog(tot_evals_fel,analytical_difference, 'bo', 'MarkerFaceColor', 'b'); hold off;
-    legend('Forward Euler','Fit line','Explicit Midpoint', '', 'Backward Euler','','Implicit Midpoint', '', 'Analytical Solution')
+    legend('Forward Euler','Explicit Midpoint', 'Backward Euler','Implicit Midpoint', 'Analytical Solution')
     title('Global Error vs # of Calls')
     xlabel("# of calls");
     ylabel("Global error")

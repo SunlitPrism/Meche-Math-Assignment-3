@@ -13,7 +13,7 @@
 % 
 % end
 
-function [h_list,g_fel_error_list,g_expmid_error_list, g_bel_error_list,g_impmid_error_list , g_analytical_difference, tot_evals_fel,tot_evals_expmid, tot_evals_bel] = global_truncation_error(tspan, hspan, test_function)
+function [h_list,g_fel_error_list,g_expmid_error_list, g_bel_error_list,g_impmid_error_list , g_analytical_difference, tot_evals_fel,tot_evals_expmid, tot_evals_bel,tot_evals_impmid] = global_truncation_error(tspan, hspan, test_function)
 
     h_list = logspace(hspan(1), hspan(2), hspan(3));
     t0 = tspan(1);
